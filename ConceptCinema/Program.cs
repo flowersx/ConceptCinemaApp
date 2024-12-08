@@ -16,10 +16,10 @@ var connectionStringUsers = builder.Configuration.GetConnectionString("DefaultCo
 var connectionStringData = builder.Configuration.GetConnectionString("DefaultConnectionData");
 
 builder.Services.AddDbContext<CinemaDbContext>(
-    options => options.UseSqlServer(connectionStringData));
+    options => options.UseSqlServer(connectionStringData, b => b.MigrationsAssembly("ConceptCinema")));
 
 builder.Services.AddDbContext<UsersDbContext>(
-    options => options.UseSqlServer(connectionStringUsers));
+    options => options.UseSqlServer(connectionStringUsers, b => b.MigrationsAssembly("ConceptCinema")));
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(
     options =>
