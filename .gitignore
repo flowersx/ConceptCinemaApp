@@ -9,3 +9,8 @@ ConceptCinema/bin
 ConceptCinema/obj
 ConceptCinema/ConceptCinema.csproj.user
 /Constants/bin
+*.dll
+/Services/bin
+/Services/obj
+/Repository/obj
+/Repository/bin

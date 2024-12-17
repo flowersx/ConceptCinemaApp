@@ -4,6 +4,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Models;
 using Models.Authentification;
+using Repository.IRepositories;
+using Repository.Repositories;
+using Services.IServices;
+using Services.Services;
+using AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
+using Services.UnitOfWork;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +18,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddControllers();
+
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var connectionStringUsers = builder.Configuration.GetConnectionString("DefaultConnectionUsers");
 var connectionStringData = builder.Configuration.GetConnectionString("DefaultConnectionData");
@@ -20,6 +29,14 @@ builder.Services.AddDbContext<CinemaDbContext>(
 
 builder.Services.AddDbContext<UsersDbContext>(
     options => options.UseSqlServer(connectionStringUsers, b => b.MigrationsAssembly("ConceptCinema")));
+
+// Repos
+builder.Services.AddScoped<ICinemaHallRepository, CinemaHallRepository>();
+
+//Services
+builder.Services.AddScoped<ICinemaHallService, CinemaHallService>();
+
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(
     options =>

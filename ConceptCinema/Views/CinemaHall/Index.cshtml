@@ -1,0 +1,34 @@
+﻿@using Models.ViewModels
+@model List<CinemaHallViewModel>
+
+@{
+    ViewData["Title"] = "Cinema Halls";
+}
+
+<h2>Cinema Halls</h2>
+
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Total Seats</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var hall in Model)
+        {
+            <tr>
+                <td>@hall.Id</td>
+                <td>@hall.Name</td>
+                <td>@hall.TotalSeats</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@hall.Id" title="Edit">
+                        <i style="cursor: pointer; color: blue;">✏️</i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

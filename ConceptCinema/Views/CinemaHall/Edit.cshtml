@@ -1,0 +1,38 @@
+﻿@using Models.ViewModels
+@model CinemaHallViewModel
+
+@{
+    ViewData["Title"] = "Edit Cinema Hall";
+}
+
+<h2>Edit Cinema Hall</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div>
+        <label>Name:</label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+
+    <div>
+        <label>Total Seats: @Model.TotalSeats</label>
+    </div>
+
+    <h3>Seats</h3>
+    <div>
+        @foreach (var row in Model.Seats.GroupBy(s => s.Row))
+        {
+            <div style="margin: 5px 0;">
+                @foreach (var seat in row.OrderBy(s => s.Number))
+                {
+                    <div style="display: inline-block; width: 30px; height: 30px; border: 1px solid #000; text-align: center; line-height: 30px; margin-right: 5px; background-color: @(seat.IsAvailable ? "#e0e0e0" : "#d9534f");">
+                        @seat.Row@seat.Number
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>

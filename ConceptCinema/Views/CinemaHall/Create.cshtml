@@ -1,0 +1,63 @@
+﻿@using Models.ViewModels
+@model CinemaHallViewModel
+
+@{
+    ViewData["Title"] = "Create Cinema Hall";
+}
+
+<h2>Create Cinema Hall</h2>
+
+<form asp-action="Create" method="post">
+    <div>
+        <label>Cinema Hall Name:</label>
+        <input asp-for="Name" type="text" required />
+    </div>
+
+    <div>
+        <label>Number of Rows:</label>
+        <input type="number" id="rows" name="Rows" min="1" required />
+    </div>
+
+    <div>
+        <label>Seats Per Row:</label>
+        <input type="number" id="seatsPerRow" name="SeatsPerRow" min="1" required />
+    </div>
+
+    <button type="button" onclick="generateSeats()">Preview Layout</button>
+    <button type="submit">Create</button>
+</form>
+
+<h3>Preview Layout</h3>
+<div id="seat-layout" style="display: inline-block; margin-top: 20px;"></div>
+
+<script>
+    function generateSeats() {
+        const rows = document.getElementById("rows").value;
+        const seatsPerRow = document.getElementById("seatsPerRow").value;
+        const layoutDiv = document.getElementById("seat-layout");
+
+        layoutDiv.innerHTML = ""; // Clear previous layout
+
+        for (let i = 0; i < rows; i++) {
+            const rowDiv = document.createElement("div");
+            rowDiv.style.margin = "5px 0";
+
+            for (let j = 0; j < seatsPerRow; j++) {
+                const seat = document.createElement("div");
+                seat.style.display = "inline-block";
+                seat.style.width = "30px";
+                seat.style.height = "30px";
+                seat.style.border = "1px solid #000";
+                seat.style.marginRight = "5px";
+                seat.style.textAlign = "center";
+                seat.style.lineHeight = "30px";
+                seat.style.backgroundColor = "#e0e0e0";
+
+                seat.innerText = `${String.fromCharCode(65 + i)}${j + 1}`; // Example A1, B2, etc.
+                rowDiv.appendChild(seat);
+            }
+
+            layoutDiv.appendChild(rowDiv);
+        }
+    }
+</script>
