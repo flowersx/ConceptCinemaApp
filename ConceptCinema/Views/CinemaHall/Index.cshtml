@@ -5,18 +5,26 @@
     ViewData["Title"] = "Cinema Halls";
 }
 
-<h2>Cinema Halls</h2>
+<div class="container my-4">
+    <h2 class="mb-4">Cinema Halls</h2>
 
-<table border="1" cellpadding="5" cellspacing="0">
-    <thead>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <p class="mb-0">Manage your cinema halls below:</p>
+        <a asp-action="Create" class="btn btn-success">
+            <i class="bi bi-plus-lg"></i> Create New Hall
+        </a>
+    </div>
+
+    <table class="table table-bordered table-striped align-middle">
+        <thead class="table-dark">
         <tr>
             <th>ID</th>
             <th>Name</th>
             <th>Total Seats</th>
             <th>Actions</th>
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         @foreach (var hall in Model)
         {
             <tr>
@@ -24,11 +32,12 @@
                 <td>@hall.Name</td>
                 <td>@hall.TotalSeats</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@hall.Id" title="Edit">
-                        <i style="cursor: pointer; color: blue;">✏️</i>
+                    <a asp-action="Edit" asp-route-id="@hall.Id" title="Edit" class="btn btn-sm btn-primary">
+                        <i class="bi bi-pencil"></i> Edit
                     </a>
                 </td>
             </tr>
         }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>
