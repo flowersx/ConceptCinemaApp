@@ -39,12 +39,6 @@ namespace Services.Services
                 throw new KeyNotFoundException("Cinema Hall not found.");
             
             hallEntity.Name = hallViewModel.Name;
-            
-            // if (hallEntity.Seats.Count != (hallViewModel.Rows * hallViewModel.SeatsPerRow))
-            // {
-            //     hallEntity.Seats = GenerateSeats(hallViewModel.Rows, hallViewModel.SeatsPerRow);
-            //     hallEntity.TotalSeats = hallEntity.Seats.Count;
-            // }
 
             await unitOfWork.CinemaHallRepository.UpdateAsync(hallEntity);
         }
@@ -53,25 +47,7 @@ namespace Services.Services
         {
             await unitOfWork.CinemaHallRepository.DeleteAsync(id);
         }
-
-        // Utility method to generate seats dynamically
-        private List<Seat> GenerateSeats(int rows, int seatsPerRow)
-        {
-            var seats = new List<Seat>();
-            for (int i = 0; i < rows; i++)
-            {
-                for (int j = 0; j < seatsPerRow; j++)
-                {
-                    seats.Add(new Seat
-                    {
-                        Row = ((char)('A' + i)).ToString(), // Rows: A, B, C, etc.
-                        Number = j + 1,
-                        IsAvailable = true
-                    });
-                }
-            }
-            return seats;
-        }
+        
 
     }
 }
