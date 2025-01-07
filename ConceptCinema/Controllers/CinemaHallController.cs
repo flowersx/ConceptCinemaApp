@@ -87,27 +87,8 @@
             var cinemaHall = await _cinemaHallService.GetByIdAsync(viewModel.Id);
             if (cinemaHall == null)
                 return NotFound();
-
-            // Update fields
+            
             cinemaHall.Name = viewModel.Name;
-
-            // Optionally regenerate seats if rows or seats per row are updated
-            var newSeats = new List<Seat>();
-            for (int i = 0; i < viewModel.Rows; i++)
-            {
-                for (int j = 0; j < viewModel.SeatsPerRow; j++)
-                {
-                    newSeats.Add(new Seat
-                    {
-                        Row = ((char)('A' + i)).ToString(),
-                        Number = j + 1,
-                        IsAvailable = true
-                    });
-                }
-            }
-
-            cinemaHall.Seats = _mapper.Map<List<SeatViewModel>>(newSeats);
-            cinemaHall.TotalSeats = newSeats.Count;
 
             await _cinemaHallService.UpdateAsync(cinemaHall);
 

@@ -5,32 +5,54 @@
     ViewData["Title"] = "Create Cinema Hall";
 }
 
-<h2>Create Cinema Hall</h2>
+<div class="container my-4">
+    <h2 class="mb-4 text-center">Create Cinema Hall</h2>
 
-<form asp-action="Create" method="post">
-    <div>
-        <label>Cinema Hall Name:</label>
-        <input asp-for="Name" type="text" required />
-    </div>
+    <form asp-action="Create" method="post" class="needs-validation" novalidate>
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">Cinema Hall Name:</label>
+            <input asp-for="Name" type="text" class="form-control" required />
+            <div class="invalid-feedback">Please enter the cinema hall name.</div>
+        </div>
 
-    <div>
-        <label>Number of Rows:</label>
-        <input type="number" id="rows" name="Rows" min="1" required />
-    </div>
+        <div class="mb-3">
+            <label for="rows" class="form-label">Number of Rows:</label>
+            <input type="number" id="rows" name="Rows" min="1" class="form-control" required />
+            <div class="invalid-feedback">Please enter a valid number of rows.</div>
+        </div>
 
-    <div>
-        <label>Seats Per Row:</label>
-        <input type="number" id="seatsPerRow" name="SeatsPerRow" min="1" required />
-    </div>
+        <div class="mb-3">
+            <label for="seatsPerRow" class="form-label">Seats Per Row:</label>
+            <input type="number" id="seatsPerRow" name="SeatsPerRow" min="1" class="form-control" required />
+            <div class="invalid-feedback">Please enter a valid number of seats per row.</div>
+        </div>
 
-    <button type="button" onclick="generateSeats()">Preview Layout</button>
-    <button type="submit">Create</button>
-</form>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <button type="button" class="btn btn-outline-primary" onclick="generateSeats()">Preview Layout</button>
+            <button type="submit" class="btn btn-success">Create</button>
+        </div>
+    </form>
 
-<h3>Preview Layout</h3>
-<div id="seat-layout" style="display: inline-block; margin-top: 20px;"></div>
+    <h3 class="mt-5">Preview Layout</h3>
+    <div id="seat-layout" class="border p-3 rounded" style="display: inline-block; margin-top: 20px;"></div>
+</div>
 
 <script>
+    (function () {
+        // Bootstrap validation styling
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+
     function generateSeats() {
         const rows = document.getElementById("rows").value;
         const seatsPerRow = document.getElementById("seatsPerRow").value;
@@ -40,20 +62,23 @@
 
         for (let i = 0; i < rows; i++) {
             const rowDiv = document.createElement("div");
-            rowDiv.style.margin = "5px 0";
+            rowDiv.classList.add("d-flex", "mb-2");
 
             for (let j = 0; j < seatsPerRow; j++) {
                 const seat = document.createElement("div");
-                seat.style.display = "inline-block";
-                seat.style.width = "30px";
-                seat.style.height = "30px";
+                seat.classList.add("d-flex", "align-items-center", "justify-content-center", "seat");
+                seat.style.width = "40px";
+                seat.style.height = "40px";
                 seat.style.border = "1px solid #000";
                 seat.style.marginRight = "5px";
-                seat.style.textAlign = "center";
-                seat.style.lineHeight = "30px";
-                seat.style.backgroundColor = "#e0e0e0";
+                seat.style.backgroundColor = "#f8f9fa";
+                seat.style.cursor = "pointer";
 
                 seat.innerText = `${String.fromCharCode(65 + i)}${j + 1}`; // Example A1, B2, etc.
+                seat.addEventListener('click', function () {
+                    seat.style.backgroundColor = seat.style.backgroundColor === "rgb(33, 136, 56)" ? "#f8f9fa" : "#218838";
+                });
+
                 rowDiv.appendChild(seat);
             }
 
@@ -61,3 +86,13 @@
         }
     }
 </script>
+
+<style>
+    .seat:hover {
+        background-color: #dee2e6;
+    }
+    .seat-selected {
+        background-color: #218838;
+        color: white;
+    }
+</style>

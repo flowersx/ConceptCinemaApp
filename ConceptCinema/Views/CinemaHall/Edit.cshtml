@@ -5,34 +5,80 @@
     ViewData["Title"] = "Edit Cinema Hall";
 }
 
-<h2>Edit Cinema Hall</h2>
+<div class="container my-4">
+    <h2 class="mb-4 text-center">Edit Cinema Hall</h2>
 
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Id" />
+    <form asp-action="Edit" method="post" class="needs-validation" novalidate>
+        <input type="hidden" asp-for="Id" />
 
-    <div>
-        <label>Name:</label>
-        <input asp-for="Name" class="form-control" />
-    </div>
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">Name:</label>
+            <input asp-for="Name" class="form-control" required />
+            <div class="invalid-feedback">Please enter a name for the cinema hall.</div>
+        </div>
 
-    <div>
-        <label>Total Seats: @Model.TotalSeats</label>
-    </div>
+        <div class="mb-3">
+            <label class="form-label">Total Seats:</label>
+            <p class="form-text">@Model.TotalSeats</p>
+        </div>
 
-    <h3>Seats</h3>
-    <div>
-        @foreach (var row in Model.Seats.GroupBy(s => s.Row))
-        {
-            <div style="margin: 5px 0;">
-                @foreach (var seat in row.OrderBy(s => s.Number))
-                {
-                    <div style="display: inline-block; width: 30px; height: 30px; border: 1px solid #000; text-align: center; line-height: 30px; margin-right: 5px; background-color: @(seat.IsAvailable ? "#e0e0e0" : "#d9534f");">
-                        @seat.Row@seat.Number
-                    </div>
+        <h3 class="mt-4">Seats Layout</h3>
+        <div id="seat-layout" class="p-3 border rounded bg-light">
+            @foreach (var row in Model.Seats.GroupBy(s => s.Row))
+            {
+                <div class="d-flex mb-2">
+                    @foreach (var seat in row.OrderBy(s => s.Number))
+                    {
+                        <div
+                            class="seat d-flex align-items-center justify-content-center"
+                            style="background-color: @(seat.IsAvailable ? "#e0e0e0" : "#d9534f");">
+                            @seat.Row@seat.Number
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <button type="submit" class="btn btn-success mt-4">Save</button>
+    </form>
+</div>
+
+<style>
+    .seat {
+        width: 40px;
+        height: 40px;
+        border: 1px solid #000;
+        margin-right: 5px;
+        text-align: center;
+        line-height: 40px;
+        cursor: pointer;
+        color: #000;
+        font-weight: bold;
+    }
+    .seat:hover {
+        background-color: #dee2e6;
+    }
+    .seat-unavailable {
+        background-color: #d9534f;
+        color: #fff;
+    }
+    .seat-available {
+        background-color: #e0e0e0;
+    }
+</style>
+
+<script>
+    (function () {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
                 }
-            </div>
-        }
-    </div>
-
-    <button type="submit" class="btn btn-primary">Save</button>
-</form>
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>

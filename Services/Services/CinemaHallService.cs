@@ -37,16 +37,14 @@ namespace Services.Services
             var hallEntity = await unitOfWork.CinemaHallRepository.GetByIdAsync(hallViewModel.Id);
             if (hallEntity == null)
                 throw new KeyNotFoundException("Cinema Hall not found.");
-
-            // Update basic properties
+            
             hallEntity.Name = hallViewModel.Name;
-
-            // Regenerate seats if rows or seatsPerRow changed
-            if (hallEntity.Seats.Count != (hallViewModel.Rows * hallViewModel.SeatsPerRow))
-            {
-                hallEntity.Seats = GenerateSeats(hallViewModel.Rows, hallViewModel.SeatsPerRow);
-                hallEntity.TotalSeats = hallEntity.Seats.Count;
-            }
+            
+            // if (hallEntity.Seats.Count != (hallViewModel.Rows * hallViewModel.SeatsPerRow))
+            // {
+            //     hallEntity.Seats = GenerateSeats(hallViewModel.Rows, hallViewModel.SeatsPerRow);
+            //     hallEntity.TotalSeats = hallEntity.Seats.Count;
+            // }
 
             await unitOfWork.CinemaHallRepository.UpdateAsync(hallEntity);
         }
