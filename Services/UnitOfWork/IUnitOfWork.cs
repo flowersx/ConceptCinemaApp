@@ -10,6 +10,7 @@ namespace Services.UnitOfWork
     public interface IUnitOfWork
     {
         ICinemaHallRepository CinemaHallRepository { get; }
+        ISeatsRepository SeatsRepository { get; }
         Task SaveAsync();
     }
 }

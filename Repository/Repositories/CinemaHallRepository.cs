@@ -9,37 +9,30 @@ using Repository.IRepositories;
 
 namespace Repository.Repositories
 {
-    public class CinemaHallRepository : ICinemaHallRepository
+    public class CinemaHallRepository(CinemaDbContext context) : ICinemaHallRepository
     {
-        private readonly CinemaDbContext _context;
-
-        public CinemaHallRepository(CinemaDbContext context)
-        {
-            _context = context;
-        }
-
         public async Task<List<CinemaHall>> GetAllAsync()
         {
-            return await _context.CinemaHalls.Include(h => h.Seats).ToListAsync();
+            return await context.CinemaHalls.Include(h => h.Seats).ToListAsync();
         }
 
         public async Task<CinemaHall> GetByIdAsync(int id)
         {
-            return await _context.CinemaHalls
+            return await context.CinemaHalls
                 .Include(h => h.Seats)
                 .FirstOrDefaultAsync(h => h.Id == id);
         }
 
         public async Task AddAsync(CinemaHall cinemaHall)
         {
-            await _context.CinemaHalls.AddAsync(cinemaHall);
-            await _context.SaveChangesAsync();
+            await context.CinemaHalls.AddAsync(cinemaHall);
+            await context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(CinemaHall cinemaHall)
         {
-            _context.CinemaHalls.Update(cinemaHall);
-            await _context.SaveChangesAsync();
+            context.CinemaHalls.Update(cinemaHall);
+            await context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
@@ -47,8 +40,8 @@ namespace Repository.Repositories
             var hall = await GetByIdAsync(id);
             if (hall != null)
             {
-                _context.CinemaHalls.Remove(hall);
-                await _context.SaveChangesAsync();
+                context.CinemaHalls.Remove(hall);
+                await context.SaveChangesAsync();
             }
         }
 

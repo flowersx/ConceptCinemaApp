@@ -14,3 +14,5 @@ ConceptCinema/ConceptCinema.csproj.user
 /Services/obj
 /Repository/obj
 /Repository/bin
+/.idea
+*.user

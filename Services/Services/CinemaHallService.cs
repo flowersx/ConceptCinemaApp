@@ -8,48 +8,33 @@ using Services.UnitOfWork;
 
 namespace Services.Services
 {
-    public class CinemaHallService : ICinemaHallService
+    public class CinemaHallService(IUnitOfWork unitOfWork, IMapper mapper, ISeatsService seatsService) : ICinemaHallService
     {
-
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-
-        public CinemaHallService(IUnitOfWork unitOfWork, IMapper mapper)
-        {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-        }
-
         public async Task<List<CinemaHallViewModel>> GetAllAsync()
         {
-            var halls = await _unitOfWork.CinemaHallRepository.GetAllAsync();
-            return _mapper.Map<List<CinemaHallViewModel>>(halls);
+            var halls = await unitOfWork.CinemaHallRepository.GetAllAsync();
+            return mapper.Map<List<CinemaHallViewModel>>(halls);
         }
 
         public async Task<CinemaHallViewModel> GetByIdAsync(int id)
         {
-            var hall = await _unitOfWork.CinemaHallRepository.GetByIdAsync(id);
+            var hall = await unitOfWork.CinemaHallRepository.GetByIdAsync(id);
             if (hall == null)
                 throw new KeyNotFoundException("Cinema Hall not found.");
 
-            return _mapper.Map<CinemaHallViewModel>(hall);
+            return mapper.Map<CinemaHallViewModel>(hall);
         }
 
         public async Task AddAsync(CinemaHallViewModel hallViewModel)
         {
-            var cinemaHall = _mapper.Map<CinemaHall>(hallViewModel);
-
-            // Dynamically generate seats
-            var seats = GenerateSeats(hallViewModel.Rows, hallViewModel.SeatsPerRow);
-            cinemaHall.Seats = seats;
-            cinemaHall.TotalSeats = seats.Count;
-
-            await _unitOfWork.CinemaHallRepository.AddAsync(cinemaHall);
+            var cinemaHall = mapper.Map<CinemaHall>(hallViewModel);
+            await unitOfWork.CinemaHallRepository.AddAsync(cinemaHall);
+            await unitOfWork.SaveAsync();
         }
 
         public async Task UpdateAsync(CinemaHallViewModel hallViewModel)
         {
-            var hallEntity = await _unitOfWork.CinemaHallRepository.GetByIdAsync(hallViewModel.Id);
+            var hallEntity = await unitOfWork.CinemaHallRepository.GetByIdAsync(hallViewModel.Id);
             if (hallEntity == null)
                 throw new KeyNotFoundException("Cinema Hall not found.");
 
@@ -63,12 +48,12 @@ namespace Services.Services
                 hallEntity.TotalSeats = hallEntity.Seats.Count;
             }
 
-            await _unitOfWork.CinemaHallRepository.UpdateAsync(hallEntity);
+            await unitOfWork.CinemaHallRepository.UpdateAsync(hallEntity);
         }
 
         public async Task DeleteAsync(int id)
         {
-            await _unitOfWork.CinemaHallRepository.DeleteAsync(id);
+            await unitOfWork.CinemaHallRepository.DeleteAsync(id);
         }
 
         // Utility method to generate seats dynamically

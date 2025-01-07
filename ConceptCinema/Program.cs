@@ -25,16 +25,18 @@ var connectionStringUsers = builder.Configuration.GetConnectionString("DefaultCo
 var connectionStringData = builder.Configuration.GetConnectionString("DefaultConnectionData");
 
 builder.Services.AddDbContext<CinemaDbContext>(
-    options => options.UseSqlServer(connectionStringData, b => b.MigrationsAssembly("ConceptCinema")));
+    options => options.UseSqlServer(connectionStringData, b => b.MigrationsAssembly("DataAccess")));
 
 builder.Services.AddDbContext<UsersDbContext>(
-    options => options.UseSqlServer(connectionStringUsers, b => b.MigrationsAssembly("ConceptCinema")));
+    options => options.UseSqlServer(connectionStringUsers, b => b.MigrationsAssembly("DataAccess")));
 
 // Repos
 builder.Services.AddScoped<ICinemaHallRepository, CinemaHallRepository>();
+builder.Services.AddScoped<ISeatsRepository, SeatsRepository>();
 
 //Services
 builder.Services.AddScoped<ICinemaHallService, CinemaHallService>();
+builder.Services.AddScoped<ISeatsService, SeatsService>();
 
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 

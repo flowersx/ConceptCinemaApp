@@ -5,7 +5,7 @@ namespace DataAccess;
 public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbContext(options)
 {
     public DbSet<CinemaHall> CinemaHalls { get; set; }
-    public DbSet<Seat> Seats { get; set; }
+    public DbSet<Seat?> Seats { get; set; }
     public DbSet<Movie> Movies { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Ticket> Tickets { get; set; }
