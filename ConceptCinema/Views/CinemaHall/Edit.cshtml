@@ -9,17 +9,17 @@
     <h2 class="mb-4 text-center">Edit Cinema Hall</h2>
 
     <form asp-action="Edit" method="post" class="needs-validation" novalidate>
-        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Id"/>
 
         <div class="mb-3">
             <label asp-for="Name" class="form-label">Name:</label>
-            <input asp-for="Name" class="form-control" required />
+            <input asp-for="Name" class="form-control" required/>
             <div class="invalid-feedback">Please enter a name for the cinema hall.</div>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Total Seats:</label>
-            <p class="form-text">@Model.TotalSeats</p>
+            <h3 class="form-label">Total Seats:</h3>
+            <h4 class="form-text">@Model.TotalSeats</h4>
         </div>
 
         <h3 class="mt-4">Seats Layout</h3>
@@ -38,7 +38,6 @@
                 </div>
             }
         </div>
-
         <button type="submit" class="btn btn-success mt-4">Save</button>
     </form>
 </div>
@@ -55,13 +54,16 @@
         color: #000;
         font-weight: bold;
     }
+
     .seat:hover {
         background-color: #dee2e6;
     }
+
     .seat-unavailable {
         background-color: #d9534f;
         color: #fff;
     }
+
     .seat-available {
         background-color: #e0e0e0;
     }

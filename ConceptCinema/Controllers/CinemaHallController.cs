@@ -16,8 +16,7 @@
             _cinemaHallService = cinemaHallService;
             _mapper = mapper;
         }
-
-        // 1. INDEX ACTION - Display all cinema halls
+        
         public async Task<IActionResult> Index()
         {
             var cinemaHalls = await _cinemaHallService.GetAllAsync();
@@ -25,25 +24,21 @@
 
             return View(viewModel);
         }
-
-        // 2. CREATE ACTION (GET) - Return form for creation
+        
         [HttpGet]
         public IActionResult Create()
         {
             return View(new CinemaHallViewModel());
         }
-
-        // 3. CREATE ACTION (POST) - Handle form submission
+        
         [HttpPost]
         public async Task<IActionResult> Create(CinemaHallViewModel viewModel)
         {
             if (!ModelState.IsValid)
                 return View(viewModel);
-
-            // Map ViewModel to Domain Model
+            
             var cinemaHall = _mapper.Map<CinemaHall>(viewModel);
-
-            // Dynamically create seats based on rows and seats per row
+            
             var seats = new List<Seat>();
             for (int i = 0; i < viewModel.Rows; i++)
             {
@@ -65,8 +60,7 @@
 
             return RedirectToAction("Index");
         }
-
-        // 4. EDIT ACTION (GET) - Return form with existing data
+        
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {

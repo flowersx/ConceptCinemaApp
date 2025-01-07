@@ -11,19 +11,22 @@
     <form asp-action="Create" method="post" class="needs-validation" novalidate>
         <div class="mb-3">
             <label asp-for="Name" class="form-label">Cinema Hall Name:</label>
-            <input asp-for="Name" type="text" class="form-control" required />
+            <input asp-for="Name" type="text" class="form-control" required/>
+            <span asp-validation-for="Name" class="text-danger"></span>
             <div class="invalid-feedback">Please enter the cinema hall name.</div>
         </div>
 
         <div class="mb-3">
             <label for="rows" class="form-label">Number of Rows:</label>
-            <input type="number" id="rows" name="Rows" min="1" class="form-control" required />
+            <input type="number" id="rows" name="Rows" min="1" class="form-control" required/>
+            <span asp-validation-for="Rows" class="text-danger"></span>
             <div class="invalid-feedback">Please enter a valid number of rows.</div>
         </div>
 
         <div class="mb-3">
             <label for="seatsPerRow" class="form-label">Seats Per Row:</label>
-            <input type="number" id="seatsPerRow" name="SeatsPerRow" min="1" class="form-control" required />
+            <input type="number" id="seatsPerRow" name="SeatsPerRow" min="1" class="form-control" required/>
+            <span asp-validation-for="SeatsPerRow" class="text-danger"></span>
             <div class="invalid-feedback">Please enter a valid number of seats per row.</div>
         </div>
 
@@ -32,14 +35,19 @@
             <button type="submit" class="btn btn-success">Create</button>
         </div>
     </form>
-
-    <h3 class="mt-5">Preview Layout</h3>
+    <div class="row">
+        <div class="col">
+            <h3 class="mt-5">Preview Layout</h3>
+        </div>
+        <div class="col">
+            <h3 class="mt-5">Total Seats: <span id="total-seats">0</span></h3>
+        </div>
+    </div>
     <div id="seat-layout" class="border p-3 rounded" style="display: inline-block; margin-top: 20px;"></div>
 </div>
 
 <script>
     (function () {
-        // Bootstrap validation styling
         'use strict';
         const forms = document.querySelectorAll('.needs-validation');
         Array.from(forms).forEach(function (form) {
@@ -57,8 +65,12 @@
         const rows = document.getElementById("rows").value;
         const seatsPerRow = document.getElementById("seatsPerRow").value;
         const layoutDiv = document.getElementById("seat-layout");
+        const totalSeatsElement = document.getElementById("total-seats");
 
-        layoutDiv.innerHTML = ""; // Clear previous layout
+        layoutDiv.innerHTML = "";
+
+        const totalSeats = rows * seatsPerRow;
+        totalSeatsElement.innerText = totalSeats;
 
         for (let i = 0; i < rows; i++) {
             const rowDiv = document.createElement("div");
@@ -74,7 +86,7 @@
                 seat.style.backgroundColor = "#f8f9fa";
                 seat.style.cursor = "pointer";
 
-                seat.innerText = `${String.fromCharCode(65 + i)}${j + 1}`; // Example A1, B2, etc.
+                seat.innerText = `${String.fromCharCode(65 + i)}${j + 1}`;
                 seat.addEventListener('click', function () {
                     seat.style.backgroundColor = seat.style.backgroundColor === "rgb(33, 136, 56)" ? "#f8f9fa" : "#218838";
                 });
@@ -85,12 +97,14 @@
             layoutDiv.appendChild(rowDiv);
         }
     }
+
 </script>
 
 <style>
     .seat:hover {
         background-color: #dee2e6;
     }
+
     .seat-selected {
         background-color: #218838;
         color: white;
