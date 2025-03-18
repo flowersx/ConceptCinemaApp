@@ -11,11 +11,11 @@
         <i class="bi bi-chevron-left"></i> Back to List
     </a>
     <form asp-action="Edit" method="post" class="needs-validation" novalidate>
-        <input type="hidden" asp-for="Id"/>
+        <input type="hidden" asp-for="Id" />
 
         <div class="mb-3">
             <label asp-for="Name" class="form-label">Name:</label>
-            <input asp-for="Name" class="form-control" required/>
+            <input asp-for="Name" class="form-control" required />
             <div class="invalid-feedback">Please enter a name for the cinema hall.</div>
         </div>
 
@@ -31,9 +31,12 @@
                 <div class="d-flex mb-2">
                     @foreach (var seat in row.OrderBy(s => s.Number))
                     {
-                        <div
-                            class="seat d-flex align-items-center justify-content-center"
-                            style="background-color: @(seat.IsAvailable ? "#e0e0e0" : "#d9534f");">
+                        <div id="seat-@seat.Row@seat.Number"
+                             class="seat d-flex align-items-center justify-content-center"
+                             style="background-color: @(seat.IsAvailable ? "#e0e0e0" : "#d9534f");"
+                             data-row="@seat.Row"
+                             data-number="@seat.Number"
+                             onclick="toggleSeatSelection(this)">
                             @seat.Row@seat.Number
                         </div>
                     }
@@ -57,9 +60,9 @@
         font-weight: bold;
     }
 
-    .seat:hover {
-        background-color: #dee2e6;
-    }
+        .seat:hover {
+            background-color: #dee2e6;
+        }
 
     .seat-unavailable {
         background-color: #d9534f;
@@ -68,6 +71,12 @@
 
     .seat-available {
         background-color: #e0e0e0;
+    }
+
+    
+    .seat-selected {
+        background-color: Green; 
+        color: green;
     }
 </style>
 
@@ -85,4 +94,12 @@
             }, false);
         });
     })();
+
+    // toogle pentru selectarea scaunului
+    function toggleSeatSelection(seatElement) {
+        
+        if (!seatElement.classList.contains("seat-unavailable")) {
+            seatElement.classList.toggle("seat-selected");  
+        }
+    }
 </script>

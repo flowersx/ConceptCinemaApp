@@ -16,12 +16,9 @@ namespace Repository.Repositories
             return await context.CinemaHalls.Include(h => h.Seats).ToListAsync();
         }
 
-        public async Task<CinemaHall> GetByIdAsync(int id)
-        {
-            return await context.CinemaHalls
+        public async Task<CinemaHall> GetByIdAsync(int id) => await context.CinemaHalls
                 .Include(h => h.Seats)
                 .FirstOrDefaultAsync(h => h.Id == id);
-        }
 
         public async Task AddAsync(CinemaHall cinemaHall)
         {

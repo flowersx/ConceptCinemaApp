@@ -12,7 +12,7 @@ namespace Services.UnitOfWork
     public class UnitOfWork : IUnitOfWork
     {
         private readonly CinemaDbContext _context;
-
+         
         public UnitOfWork(CinemaDbContext context)
         {
             _context = context;
