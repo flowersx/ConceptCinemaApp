@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess;
 
@@ -15,6 +16,7 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
     modelBuilder.Entity<Seat>()
         .HasOne(s => s.CinemaHall)
         .WithMany(h => h.Seats)
@@ -99,6 +101,7 @@ public class Movie
     public string Title { get; set; }
     public string Description { get; set; }
     public DateTime ReleaseDate { get; set; }
+    public string ImageBase64 { get; set; }
     public ICollection<Showtime> Showtimes { get; set; }
 }
 

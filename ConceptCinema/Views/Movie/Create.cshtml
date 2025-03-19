@@ -1,0 +1,75 @@
+﻿@model Models.ViewModels.MovieViewModel
+
+<div class="cinema-dashboard">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="cinema-title">Add New Movie</h2>
+        <a href="@Url.Action("Index", "Movie")" class="btn btn-cinema-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to List
+        </a>
+    </div>
+
+    <div class="cinema-card">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="mb-4">
+                        <label asp-for="Title" class="cinema-label">Movie Title</label>
+                        <input asp-for="Title" class="form-control cinema-input" required />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Description" class="cinema-label">Description</label>
+                        <textarea asp-for="Description" class="form-control cinema-textarea" rows="6" required></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="ReleaseDate" class="cinema-label">Release Date</label>
+                        <input asp-for="ReleaseDate" type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                        <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="mb-4">
+                        <label for="imageFile" class="cinema-label">Movie Poster</label>
+                        <div class="poster-upload-container">
+                            <div class="poster-preview" id="posterPreview">
+                                <i class="fas fa-film poster-placeholder"></i>
+                                <div class="poster-text">Preview</div>
+                            </div>
+                            <input type="file" id="imageFile" name="imageFile" class="form-control cinema-input poster-input" accept="image/*" />
+                            <small class="text-muted mt-2 d-block">Upload a movie poster (recommended: 300x450px)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-4">
+                <a href="@Url.Action("Index", "Movie")" class="btn btn-cinema-secondary me-2">Cancel</a>
+                <button type="submit" class="btn btn-cinema-primary">
+                    <i class="fas fa-save me-2"></i>Save Movie
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('imageFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('posterPreview');
+                    preview.innerHTML = `<img src="${e.target.result}" class="img-fluid poster-preview-img" alt="Movie poster preview">`;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+}

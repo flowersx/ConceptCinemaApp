@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DataAccess.Migrations.CinemaDb
+namespace DataAccess.Migrations
 {
     [DbContext(typeof(CinemaDbContext))]
     partial class CinemaDbContextModelSnapshot : ModelSnapshot
@@ -71,6 +71,10 @@ namespace DataAccess.Migrations.CinemaDb
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageBase64")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

@@ -20,6 +20,7 @@ namespace Services.UnitOfWork
 
         public ICinemaHallRepository CinemaHallRepository => new CinemaHallRepository(_context);
         public ISeatsRepository SeatsRepository => new SeatsRepository(_context);
+        public IMovieRepository MovieRepository => new MovieRepository(_context);
 
         public async Task SaveAsync()
         {

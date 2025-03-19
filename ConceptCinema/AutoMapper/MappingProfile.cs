@@ -16,5 +16,8 @@ public class MappingProfile : Profile
         // Map Seat to SeatViewModel
         CreateMap<Seat, SeatViewModel>();
         CreateMap<SeatViewModel, Seat>();
+
+        // Map Movie to MovieViewModel
+        CreateMap<Movie, MovieViewModel>().ReverseMap();
     }
 }

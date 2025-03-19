@@ -11,6 +11,7 @@ namespace Services.UnitOfWork
     {
         ICinemaHallRepository CinemaHallRepository { get; }
         ISeatsRepository SeatsRepository { get; }
+        IMovieRepository MovieRepository { get; }
         Task SaveAsync();
     }
 }

@@ -1,0 +1,77 @@
+﻿@model List<Models.ViewModels.MovieViewModel>
+
+<div class="cinema-dashboard">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="cinema-title">Movie Management</h2>
+        <a href="@Url.Action("Create", "Movie")" class="btn btn-cinema-primary">
+            <i class="fas fa-plus-circle me-2"></i>Add New Movie
+        </a>
+    </div>
+
+    <div class="cinema-card">
+        <div class="table-responsive">
+            <table class="table cinema-table">
+                <thead>
+                    <tr>
+                        <th>Poster</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Release Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var movie in Model)
+                    {
+                        <tr>
+                            <td class="poster-cell">
+                                @if (!string.IsNullOrEmpty(movie.ImageBase64))
+                                {
+                                    <img src="data:image/jpeg;base64,@movie.ImageBase64" alt="@movie.Title" class="movie-thumbnail" />
+                                }
+                                else
+                                {
+                                    <div class="no-poster">No Poster</div>
+                                }
+                            </td>
+                            <td>@movie.Title</td>
+                            <td>@(movie.Description.Length > 100 ? movie.Description.Substring(0, 100) + "..." : movie.Description)</td>
+                            <td>@movie.ReleaseDate.ToString("MMMM d, yyyy")</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="@Url.Action("Edit", "Movie", new { id = movie.Id })" class="btn btn-cinema-secondary">
+                                        <i class="fas fa-edit me-1"></i> Edit
+                                    </a>
+                                    <button type="button" class="btn btn-cinema-danger" data-bs-toggle="modal" data-bs-target="#deleteModal@(movie.Id)">
+                                        <i class="fas fa-trash-alt me-1"></i> Delete
+                                    </button>
+                                </div>
+
+                                <!-- Delete Confirmation Modal -->
+                                <div class="modal fade" id="deleteModal@(movie.Id)" tabindex="-1" aria-labelledby="deleteModalLabel@(movie.Id)" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content cinema-modal">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel@(movie.Id)">Confirm Deletion</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete <strong>@movie.Title</strong>?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-cinema-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <form action="@Url.Action("Delete", "Movie", new { id = movie.Id })" method="post" class="d-inline">
+                                                    <button type="submit" class="btn btn-cinema-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
