@@ -82,17 +82,15 @@ footer {
 .container {
     max-width: 1200px;
     padding: 0 15px;
-    flex: 1 0 auto; 
+    flex: 1 0 auto;
 }
 
-/* General Styles */
 h1, h2, h3, h4, h5, h6 {
     color: var(--cinema-light);
     font-weight: 700;
     margin-bottom: 1rem;
 }
 
-/* Card Styles */
 .cinema-card {
     background-color: var(--cinema-card-bg);
     border: 1px solid var(--cinema-card-border);
@@ -114,7 +112,6 @@ h1, h2, h3, h4, h5, h6 {
     letter-spacing: 1px;
 }
 
-/* Table Styles */
 .cinema-table {
     color: var(--cinema-light);
     margin-bottom: 0;
@@ -144,7 +141,6 @@ h1, h2, h3, h4, h5, h6 {
         vertical-align: middle;
     }
 
-/* Button Styles */
 .btn-cinema-primary {
     background-color: var(--cinema-primary);
     border: none;
@@ -192,7 +188,6 @@ h1, h2, h3, h4, h5, h6 {
         color: white;
     }
 
-/* Form Styles */
 .cinema-input, .cinema-textarea {
     background-color: var(--cinema-dark);
     border: 1px solid var(--cinema-accent);
@@ -216,7 +211,6 @@ h1, h2, h3, h4, h5, h6 {
     display: block;
 }
 
-/* Movie Poster Styles */
 .movie-thumbnail {
     width: 60px;
     height: 90px;
@@ -242,7 +236,6 @@ h1, h2, h3, h4, h5, h6 {
     width: 80px;
 }
 
-/* Poster Upload Styles */
 .poster-upload-container {
     display: flex;
     flex-direction: column;
@@ -284,7 +277,6 @@ h1, h2, h3, h4, h5, h6 {
     max-width: 200px;
 }
 
-/* Modal Styles */
 .cinema-modal {
     background-color: var(--cinema-card-bg);
     color: var(--cinema-light);
@@ -298,12 +290,11 @@ h1, h2, h3, h4, h5, h6 {
         filter: invert(1) grayscale(100%) brightness(200%);
     }
 
-/* Login Partial Styles */
+
 .navbar-nav .btn {
     margin-left: 0.5rem;
 }
 
-/* Responsive Adjustments */
 @media (max-width: 768px) {
     .cinema-dashboard {
         padding: 1rem;
