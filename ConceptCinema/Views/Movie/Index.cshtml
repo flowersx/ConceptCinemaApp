@@ -17,6 +17,7 @@
                         <th>Title</th>
                         <th>Description</th>
                         <th>Release Date</th>
+                        <th>Show in Main Page</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -37,6 +38,11 @@
                             <td>@movie.Title</td>
                             <td>@(movie.Description.Length > 100 ? movie.Description.Substring(0, 100) + "..." : movie.Description)</td>
                             <td>@movie.ReleaseDate.ToString("MMMM d, yyyy")</td>
+                            <td>
+                                <input type="checkbox" class="form-check-input toggle-main-page"
+                                       data-movie-id="@movie.Id"
+                                @(movie.ShowInMainPage ? "checked" : "") />
+                            </td>
                             <td>
                                 <div class="btn-group">
                                     <a href="@Url.Action("Edit", "Movie", new { id = movie.Id })" class="btn btn-cinema-secondary">
@@ -74,3 +80,37 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggles = document.querySelectorAll(".toggle-main-page");
+
+        toggles.forEach(toggle => {
+            toggle.addEventListener("change", function () {
+                const movieId = this.getAttribute("data-movie-id");
+                const showInMainPage = this.checked;
+
+                // Make the API call to update the movie's ShowInMainPage property
+                fetch('@Url.Action("ToggleShowInMainPage", "Movie")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        movieId: movieId,
+                        showInMainPage: showInMainPage
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        alert("Failed to update the movie's visibility on the main page.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("An error occurred while updating the movie.");
+                });
+            });
+        });
+    });
+</script>

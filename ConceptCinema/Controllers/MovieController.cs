@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DataAccess;
 using Microsoft.AspNetCore.Mvc;
+using Models.Models;
 using Models.ViewModels;
 using Services.IServices;
 using System;
@@ -71,6 +72,22 @@ namespace WebApplication1.Controllers
             var viewModel = _mapper.Map<MovieViewModel>(movie);
             return View(viewModel);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> ToggleShowInMainPage([FromBody] ToggleShowInMainPageRequest request)
+        {
+            var movie = await _movieService.GetMovieByIdAsync(request.MovieId);
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            movie.ShowInMainPage = request.ShowInMainPage;
+            await _movieService.UpdateMovieAsync(movie);
+
+            return Ok();
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> Edit(MovieViewModel viewModel, IFormFile imageFile)

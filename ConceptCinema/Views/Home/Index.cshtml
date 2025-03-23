@@ -1,4 +1,7 @@
-﻿@{
+﻿@using DataAccess
+@model List<Movie>
+
+@{
     ViewData["Title"] = "Filme & Promoții";
 }
 
@@ -6,40 +9,27 @@
 
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-6 mb-4">
-            <div class="card text-center p-4 transparent-card">
-                <img src="/photos/endgame.jpg" class="card-img-top img-fluid" alt="Avengers EndGame" style="object-fit: cover; width: 100%; height: 400px;">
-                <div class="card-body">
-                    <h4 class="card-title">Avengers Endgame</h4>
+        @foreach (var movie in Model)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card text-center p-4 transparent-card">
+                    @if (!string.IsNullOrEmpty(movie.ImageBase64))
+                    {
+                        <img src="data:image/jpeg;base64,@movie.ImageBase64" class="card-img-top img-fluid" alt="@movie.Title" style="object-fit: cover; width: 100%; height: 400px;">
+                    }
+                    else
+                    {
+                        <img src="/photos/default-placeholder.jpg" class="card-img-top img-fluid" alt="@movie.Title" style="object-fit: cover; width: 100%; height: 400px;">
+                    }
+                    <div class="card-body">
+                        <h4 class="card-title">@movie.Title</h4>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6 mb-4">
-            <div class="card text-center p-4 transparent-card">
-                <img src="photos/deadpool.jpg" class="card-img-top" alt="Filmul 2" style="object-fit: cover; width: 100%; height: 400px;">
-                <div class="card-body">
-					<h4 class="card-title">DeadPool & Wolverine</h4>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mb-4">
-            <div class="card text-center p-4 transparent-card">
-                <img src="photos/greenmile.jpg" class="card-img-top" alt="Filmul 3" style="object-fit: cover; width: 100%; height: 400px;">
-                <div class="card-body">
-                    <h4 class="card-title">The Green Mile</h4>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mb-4">
-            <div class="card text-center p-4 transparent-card">
-                <img src="photos/martian.jpg" class="card-img-top" alt="Filmul 4" style="object-fit: cover; width: 100%; height: 400px;">
-                <div class="card-body">
-                    <h4 class="card-title">The Martian</h4>
-                </div>
-            </div>
-        </div>
-    </div>    
+        }
+    </div>
 </div>
+
 <style>
     h2.text-center {
         font-size: 2rem;
@@ -72,4 +62,5 @@
 
     .card-body {
         color: white;
+    }
 </style>

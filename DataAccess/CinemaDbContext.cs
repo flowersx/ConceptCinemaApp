@@ -102,6 +102,7 @@ public class Movie
     public string Description { get; set; }
     public DateTime ReleaseDate { get; set; }
     public string ImageBase64 { get; set; }
+    public bool ShowInMainPage { get; set; } = false;
     public ICollection<Showtime> Showtimes { get; set; }
 }
 
