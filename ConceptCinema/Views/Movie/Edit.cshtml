@@ -38,6 +38,9 @@
                     <div class="mb-4">
                         <label for="imageFile" class="cinema-label">Movie Poster</label>
                         <div class="poster-upload-container">
+                            <label asp-for="ImageBase64" hidden class="cinema-label">Movie Title</label>
+                            <input asp-for="ImageBase64" hidden class="form-control cinema-input" required />
+                            <span asp-validation-for="ImageBase64" hidden class="text-danger"></span>
                             <div class="poster-preview" id="posterPreview">
                                 @if (!string.IsNullOrEmpty(Model.ImageBase64))
                                 {

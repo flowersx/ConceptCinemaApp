@@ -90,7 +90,6 @@
                 const movieId = this.getAttribute("data-movie-id");
                 const showInMainPage = this.checked;
 
-                // Make the API call to update the movie's ShowInMainPage property
                 fetch('@Url.Action("ToggleShowInMainPage", "Movie")', {
                     method: 'POST',
                     headers: {

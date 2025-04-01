@@ -90,43 +90,14 @@ namespace WebApplication1.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Edit(MovieViewModel viewModel, IFormFile imageFile)
+        public async Task<IActionResult> Edit(MovieViewModel viewModel)
         {
-            if (imageFile != null && imageFile.Length > 0)
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    await imageFile.CopyToAsync(memoryStream);
-                    byte[] fileBytes = memoryStream.ToArray();
-                    viewModel.ImageBase64 = Convert.ToBase64String(fileBytes);
-                    ModelState.Remove("ImageBase64");
-                }
-            }
-            else
-            {
-                viewModel.ImageBase64 = string.Empty;
-            }
-
             if (!ModelState.IsValid)
                 return View(viewModel);
 
             var movie = await _movieService.GetMovieByIdAsync(viewModel.Id);
             if (movie == null)
                 return NotFound();
-
-            if (imageFile != null && imageFile.Length > 0)
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    await imageFile.CopyToAsync(memoryStream);
-                    byte[] fileBytes = memoryStream.ToArray();
-                    viewModel.ImageBase64 = Convert.ToBase64String(fileBytes);
-                }
-            }
-            else
-            {
-                viewModel.ImageBase64 = movie.ImageBase64;
-            }
 
             movie.Title = viewModel.Title;
             movie.Description = viewModel.Description;
