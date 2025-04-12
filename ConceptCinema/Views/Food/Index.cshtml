@@ -35,8 +35,7 @@
                             </td>
                             <td>@food.Name</td>
                             <td>@food.Price.ToString("C")</td>
-                            <td>
-                                <div class="d-flex gap-2">
+                            <td>                                <div class="d-flex gap-2">
                                     <a href="@Url.Action("Edit", "Food", new { id = food.Id })" class="btn btn-cinema-secondary">Edit</a>
                                     <div class="dropdown">
                                         <button class="btn btn-cinema-primary dropdown-toggle" type="button" id="dropdownMenuButton-@food.Id" data-bs-toggle="dropdown" aria-expanded="false">
@@ -44,6 +43,26 @@
                                         </button>
                                         <div class="dropdown-menu cinema-dropdown-menu" aria-labelledby="dropdownMenuButton-@food.Id">
                                             <div class="p-2">
+                                                <button type="button" class="btn btn-cinema-danger" data-bs-toggle="modal" data-bs-target="#deleteModal@(food.Id)">
+                                                    <i class="fas fa-trash-alt me-1"></i> Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal fade" id="deleteModal@(food.Id)" tabindex="-1" aria-labelledby="deleteModalLabel@(food.Id)" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content cinema-modal">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel@(food.Id)">Confirm Deletion</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete <strong>@food.Name</strong>? This action cannot be undone.
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-cinema-secondary" data-bs-dismiss="modal">Cancel</button>
                                                 <form action="@Url.Action("Delete", "Food", new { id = food.Id })" method="post" class="d-inline">
                                                     <button type="submit" class="btn btn-cinema-danger">Delete</button>
                                                 </form>
