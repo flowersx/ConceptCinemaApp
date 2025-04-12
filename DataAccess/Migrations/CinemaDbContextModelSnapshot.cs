@@ -171,13 +171,46 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal>("BasePrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("CinemaHallId")
                         .HasColumnType("int");
+
+                    b.Property<int>("DurationMinutes")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsFriday")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsMonday")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSaturday")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSunday")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsThursday")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsTuesday")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsWednesday")
+                        .HasColumnType("bit");
 
                     b.Property<int>("MovieId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("StartTime")
+                    b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -280,6 +313,33 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Models.Models.ShowtimeInterval", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ShowtimeId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShowtimeId");
+
+                    b.ToTable("ShowtimeInterval");
                 });
 
             modelBuilder.Entity("DataAccess.PackageFoodItem", b =>
@@ -388,6 +448,15 @@ namespace DataAccess.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Models.Models.ShowtimeInterval", b =>
+                {
+                    b.HasOne("DataAccess.Showtime", null)
+                        .WithMany("Intervals")
+                        .HasForeignKey("ShowtimeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("DataAccess.CinemaHall", b =>
                 {
                     b.Navigation("Seats");
@@ -419,6 +488,8 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Showtime", b =>
                 {
+                    b.Navigation("Intervals");
+
                     b.Navigation("Tickets");
                 });
 

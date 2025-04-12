@@ -113,9 +113,20 @@ namespace DataAccess.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     MovieId = table.Column<int>(type: "int", nullable: false),
-                    CinemaHallId = table.Column<int>(type: "int", nullable: false)
+                    CinemaHallId = table.Column<int>(type: "int", nullable: false),
+                    DurationMinutes = table.Column<int>(type: "int", nullable: false),
+                    BasePrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsMonday = table.Column<bool>(type: "bit", nullable: false),
+                    IsTuesday = table.Column<bool>(type: "bit", nullable: false),
+                    IsWednesday = table.Column<bool>(type: "bit", nullable: false),
+                    IsThursday = table.Column<bool>(type: "bit", nullable: false),
+                    IsFriday = table.Column<bool>(type: "bit", nullable: false),
+                    IsSaturday = table.Column<bool>(type: "bit", nullable: false),
+                    IsSunday = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -177,6 +188,28 @@ namespace DataAccess.Migrations
                         name: "FK_Transactions_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ShowtimeInterval",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ShowtimeId = table.Column<int>(type: "int", nullable: false),
+                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShowtimeInterval", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ShowtimeInterval_Showtime_ShowtimeId",
+                        column: x => x.ShowtimeId,
+                        principalTable: "Showtime",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -259,6 +292,11 @@ namespace DataAccess.Migrations
                 column: "MovieId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ShowtimeInterval_ShowtimeId",
+                table: "ShowtimeInterval",
+                column: "ShowtimeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TicketPackages_PackageId",
                 table: "TicketPackages",
                 column: "PackageId");
@@ -290,6 +328,9 @@ namespace DataAccess.Migrations
         {
             migrationBuilder.DropTable(
                 name: "PackageFoodItems");
+
+            migrationBuilder.DropTable(
+                name: "ShowtimeInterval");
 
             migrationBuilder.DropTable(
                 name: "TicketPackages");

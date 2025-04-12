@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Models.Models;
 
 namespace DataAccess;
 
@@ -134,12 +135,26 @@ public class Movie
 public class Showtime
 {
     public int Id { get; set; }
-    public DateTime StartTime { get; set; }
     public int MovieId { get; set; }
     public int CinemaHallId { get; set; }
+    public int DurationMinutes { get; set; }
+    public decimal BasePrice { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
+    
+    public bool IsMonday { get; set; }
+    public bool IsTuesday { get; set; }
+    public bool IsWednesday { get; set; }
+    public bool IsThursday { get; set; }
+    public bool IsFriday { get; set; }
+    public bool IsSaturday { get; set; }
+    public bool IsSunday { get; set; }
+    public bool IsActive { get; set; } = true;
+    
     public Movie Movie { get; set; }
     public CinemaHall CinemaHall { get; set; }
     public ICollection<Ticket> Tickets { get; set; }
+    public ICollection<ShowtimeInterval> Intervals { get; set; }
 }
 
 public class User
