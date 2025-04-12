@@ -57,11 +57,9 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
         .HasForeignKey(tr => tr.UserId)
         .OnDelete(DeleteBehavior.Cascade);
 
-    // Use Id as the primary key for tickets instead of the composite key
     modelBuilder.Entity<Ticket>()
         .HasKey(t => t.Id);
         
-    // Create a unique index on the composite key to maintain the uniqueness constraint
     modelBuilder.Entity<Ticket>()
         .HasIndex(t => new { t.UserId, t.SeatId, t.ShowtimeId })
         .IsUnique();

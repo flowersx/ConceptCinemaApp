@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Constants.Authentification;
 using DataAccess;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Models;
 using Models.ViewModels;
@@ -29,12 +31,14 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = UserRoles.Admin)]
         public IActionResult Create()
         {
             return View(new MovieViewModel());
         }
 
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Create(MovieViewModel viewModel, IFormFile imageFile)
         {
             if (imageFile != null && imageFile.Length > 0)
@@ -63,6 +67,7 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Edit(int id)
         {
             var movie = await _movieService.GetMovieByIdAsync(id);
@@ -74,6 +79,7 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> ToggleShowInMainPage([FromBody] ToggleShowInMainPageRequest request)
         {
             var movie = await _movieService.GetMovieByIdAsync(request.MovieId);
@@ -88,8 +94,8 @@ namespace WebApplication1.Controllers
             return Ok();
         }
 
-
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Edit(MovieViewModel viewModel)
         {
             if (!ModelState.IsValid)
@@ -107,8 +113,8 @@ namespace WebApplication1.Controllers
             await _movieService.UpdateMovieAsync(movie);
             return RedirectToAction("Index");
         }
-
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Delete(int id)
         {
             var movie = await _movieService.GetMovieByIdAsync(id);

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Constants.Authentification;
 using DataAccess;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.ViewModels;
 using Services.IServices;
@@ -28,12 +30,14 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = UserRoles.Admin)]
         public IActionResult Create()
         {
             return View(new FoodViewModel());
         }
 
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Create(FoodViewModel viewModel, IFormFile imageFile)
         {
             if (imageFile != null && imageFile.Length > 0)
@@ -62,6 +66,7 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Edit(int id)
         {
             var food = await _foodService.GetFoodByIdAsync(id);
@@ -73,8 +78,11 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Edit(FoodViewModel viewModel, IFormFile imageFile)
         {
+            ModelState.Remove("imageFile");
+
             if (imageFile != null && imageFile.Length > 0)
             {
                 using (var memoryStream = new MemoryStream())
@@ -82,7 +90,6 @@ namespace WebApplication1.Controllers
                     await imageFile.CopyToAsync(memoryStream);
                     byte[] fileBytes = memoryStream.ToArray();
                     viewModel.ImageBase64 = Convert.ToBase64String(fileBytes);
-                    ModelState.Remove("ImageBase64");
                 }
             }
 
@@ -95,18 +102,16 @@ namespace WebApplication1.Controllers
 
             food.Name = viewModel.Name;
             food.Price = viewModel.Price;
-            
-            // Only update image if a new one was uploaded
-            if (!string.IsNullOrEmpty(viewModel.ImageBase64))
-            {
-                food.ImageBase64 = viewModel.ImageBase64;
-            }
+
+            // Update image - either the new uploaded one or the existing one from the hidden field
+            food.ImageBase64 = viewModel.ImageBase64;
 
             await _foodService.UpdateFoodAsync(food);
             return RedirectToAction("Index");
         }
 
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Delete(int id)
         {
             var food = await _foodService.GetFoodByIdAsync(id);

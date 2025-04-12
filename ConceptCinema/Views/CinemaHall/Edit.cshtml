@@ -9,9 +9,18 @@
     <h2 class="mb-4 text-center">Edit Cinema Hall</h2>
     <a asp-action="Index" class="btn btn-outline-secondary mb-4">
         <i class="bi bi-chevron-left"></i> Back to List
-    </a>
-    <form asp-action="Edit" method="post" class="needs-validation" novalidate>
+    </a>    <form asp-action="Edit" method="post" class="needs-validation" novalidate>
         <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="TotalSeats" />
+        <input type="hidden" asp-for="Rows" />
+        <input type="hidden" asp-for="SeatsPerRow" />
+        
+        @for (int i = 0; i < Model.Seats.Count; i++)
+        {
+            <input type="hidden" name="Seats[@i].Row" value="@Model.Seats[i].Row" />
+            <input type="hidden" name="Seats[@i].Number" value="@Model.Seats[i].Number" />
+            <input type="hidden" name="Seats[@i].IsAvailable" id="seat-available-@Model.Seats[i].Row@Model.Seats[i].Number" value="@Model.Seats[i].IsAvailable.ToString().ToLower()" />
+        }
 
         <div class="mb-3">
             <label asp-for="Name" class="form-label">Name:</label>
@@ -93,13 +102,22 @@
                 form.classList.add('was-validated');
             }, false);
         });
-    })();
-
-    // toogle pentru selectarea scaunului
+    })();    // toogle pentru selectarea scaunului
     function toggleSeatSelection(seatElement) {
-        
         if (!seatElement.classList.contains("seat-unavailable")) {
-            seatElement.classList.toggle("seat-selected");  
+            seatElement.classList.toggle("seat-selected");
+            
+            // Get the seat row and number
+            const row = seatElement.getAttribute("data-row");
+            const number = seatElement.getAttribute("data-number");
+            
+            // Find the corresponding hidden input field
+            const hiddenField = document.getElementById(`seat-available-${row}${number}`);
+            
+            // Toggle the value between "true" and "false"
+            if (hiddenField) {
+                hiddenField.value = seatElement.classList.contains("seat-selected") ? "false" : "true";
+            }
         }
     }
 </script>

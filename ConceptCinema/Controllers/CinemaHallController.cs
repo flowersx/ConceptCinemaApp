@@ -1,8 +1,10 @@
 ﻿namespace WebApplication1.Controllers
 {
     using AutoMapper;
+    using Constants.Authentification;
     using DataAccess;
     using global::Models.ViewModels;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Services.IServices;
 
@@ -16,7 +18,7 @@
             _cinemaHallService = cinemaHallService;
             _mapper = mapper;
         }
-        
+
         public async Task<IActionResult> Index()
         {
             var cinemaHalls = await _cinemaHallService.GetAllAsync();
@@ -24,21 +26,23 @@
 
             return View(viewModel);
         }
-        
+
         [HttpGet]
+        [Authorize(Roles = UserRoles.Admin)]
         public IActionResult Create()
         {
             return View(new CinemaHallViewModel());
         }
-        
+
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Create(CinemaHallViewModel viewModel)
         {
             if (!ModelState.IsValid)
                 return View(viewModel);
-            
+
             var cinemaHall = _mapper.Map<CinemaHall>(viewModel);
-            
+
             var seats = new List<Seat>();
             for (int i = 0; i < viewModel.Rows; i++)
             {
@@ -47,7 +51,7 @@
                     seats.Add(new Seat
                     {
                         Row = ((char)('A' + i)).ToString(),
-                        Number = j + 1,              
+                        Number = j + 1,
                         IsAvailable = true
                     });
                 }
@@ -60,8 +64,9 @@
 
             return RedirectToAction("Index");
         }
-        
+
         [HttpGet]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Edit(int id)
         {
             var cinemaHall = await _cinemaHallService.GetByIdAsync(id);
@@ -73,30 +78,35 @@
         }
 
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Edit(CinemaHallViewModel viewModel)
         {
+            ModelState.Remove("Rows");
+            ModelState.Remove("SeatsPerRow");
+
             if (!ModelState.IsValid)
                 return View(viewModel);
 
             var cinemaHall = await _cinemaHallService.GetByIdAsync(viewModel.Id);
             if (cinemaHall == null)
                 return NotFound();
-            
+
             cinemaHall.Name = viewModel.Name;
 
             await _cinemaHallService.UpdateAsync(cinemaHall);
 
             return RedirectToAction("Index");
         }
-        
+
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Delete(int id)
         {
             var cinemaHall = await _cinemaHallService.GetByIdAsync(id);
             if (cinemaHall == null)
                 return NotFound();
 
-            await _cinemaHallService.DeleteAsync(id); 
+            await _cinemaHallService.DeleteAsync(id);
 
             return RedirectToAction("Index");
         }
