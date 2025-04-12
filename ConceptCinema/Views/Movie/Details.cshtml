@@ -1,0 +1,152 @@
+@using Models.ViewModels
+@model MovieViewModel
+
+@{
+    ViewData["Title"] = $"{Model.Title} - Details";
+}
+
+<div class="movie-details-container">
+    <div class="container py-5">
+        <div class="card movie-details-card">
+            <div class="row g-0">
+                <div class="col-md-5">
+                    <div class="movie-poster-container">
+                        @if (!string.IsNullOrEmpty(Model.ImageBase64))
+                        {
+                            <img src="data:image/jpeg;base64,@Model.ImageBase64" class="movie-poster" alt="@Model.Title">
+                        }
+                        else
+                        {
+                            <img src="/photos/default-placeholder.jpg" class="movie-poster" alt="@Model.Title">
+                        }
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="card-body p-4 d-flex flex-column h-100">
+                        <div class="movie-details-header d-flex justify-content-between align-items-start">
+                            <h1 class="card-title movie-title">@Model.Title</h1>
+                            <span class="release-date">@Model.ReleaseDate.ToString("MMMM dd, yyyy")</span>
+                        </div>
+                        <div class="movie-description mt-4">
+                            <h5 class="section-title">Description</h5>
+                            <p class="card-text">@Model.Description</p>
+                        </div>
+
+                        <div class="mt-auto mb-0 pt-4 d-flex justify-content-between">
+                            <a href="@Url.Action("Index", "Home")" class="btn btn-cinema-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Home
+                            </a>
+                            <button class="btn btn-cinema-primary book-ticket-btn">
+                                <i class="fas fa-ticket-alt me-2"></i>Book Tickets
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #141414;
+    }
+
+    .movie-details-container {
+        min-height: 85vh;
+        padding: 20px 0;
+    }
+
+    .movie-details-card {
+        background-color: #222;
+        border: none;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .movie-poster-container {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .movie-poster {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .movie-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 10px;
+    }
+
+    .movie-details-header {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 15px;
+    }
+
+    .release-date {
+        color: #aaa;
+        font-size: 0.9rem;
+        padding: 5px 10px;
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 5px;
+    }
+
+    .section-title {
+        color: #ddd;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .card-text {
+        color: #bbb;
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+
+    .btn-cinema-secondary {
+        background-color: #333;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-cinema-secondary:hover {
+        background-color: #444;
+        color: #fff;
+    }
+
+    .btn-cinema-primary {
+        background-color: #e50914;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-cinema-primary:hover {
+        background-color: #f71622;
+        color: #fff;
+    }
+
+    .book-ticket-btn {
+        font-weight: 600;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // This is where you would add any JavaScript for the booking functionality
+        const bookTicketBtn = document.querySelector('.book-ticket-btn');
+        bookTicketBtn.addEventListener('click', function() {
+            alert('Booking functionality will be implemented in the future.');
+        });
+    });
+</script>

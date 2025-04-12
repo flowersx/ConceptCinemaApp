@@ -113,6 +113,18 @@ namespace WebApplication1.Controllers
             await _movieService.UpdateMovieAsync(movie);
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var movie = await _movieService.GetMovieByIdAsync(id);
+            if (movie == null)
+                return NotFound();
+
+            var viewModel = _mapper.Map<MovieViewModel>(movie);
+            return View(viewModel);
+        }
+
         [HttpPost]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Delete(int id)
