@@ -16,11 +16,10 @@ namespace Services.UnitOfWork
         public UnitOfWork(CinemaDbContext context)
         {
             _context = context;
-        }
-
-        public ICinemaHallRepository CinemaHallRepository => new CinemaHallRepository(_context);
+        }        public ICinemaHallRepository CinemaHallRepository => new CinemaHallRepository(_context);
         public ISeatsRepository SeatsRepository => new SeatsRepository(_context);
         public IMovieRepository MovieRepository => new MovieRepository(_context);
+        public IFoodRepository FoodRepository => new FoodRepository(_context);
 
         public async Task SaveAsync()
         {

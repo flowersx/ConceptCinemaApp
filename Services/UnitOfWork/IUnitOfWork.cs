@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using Repository.IRepositories;
 
 namespace Services.UnitOfWork
-{
-    public interface IUnitOfWork
+{    public interface IUnitOfWork
     {
         ICinemaHallRepository CinemaHallRepository { get; }
         ISeatsRepository SeatsRepository { get; }
         IMovieRepository MovieRepository { get; }
+        IFoodRepository FoodRepository { get; }
         Task SaveAsync();
     }
 }

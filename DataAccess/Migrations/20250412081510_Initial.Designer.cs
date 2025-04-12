@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(CinemaDbContext))]
-    [Migration("20250319172501_ImageMovie")]
-    partial class ImageMovie
+    [Migration("20250412081510_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,6 +53,10 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ImageBase64")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -84,6 +88,9 @@ namespace DataAccess.Migrations
                     b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("ShowInMainPage")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -111,6 +118,24 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Packages");
+                });
+
+            modelBuilder.Entity("DataAccess.PackageFoodItem", b =>
+                {
+                    b.Property<int>("PackageId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FoodAndBeverageId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("PackageId", "FoodAndBeverageId");
+
+                    b.HasIndex("FoodAndBeverageId");
+
+                    b.ToTable("PackageFoodItems");
                 });
 
             modelBuilder.Entity("DataAccess.Seat", b =>
@@ -169,8 +194,11 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Ticket", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("SeatId")
                         .HasColumnType("int");
@@ -178,21 +206,34 @@ namespace DataAccess.Migrations
                     b.Property<int>("ShowtimeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Id")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PackageId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "SeatId", "ShowtimeId");
-
-                    b.HasIndex("PackageId");
+                    b.HasKey("Id");
 
                     b.HasIndex("SeatId");
 
                     b.HasIndex("ShowtimeId");
 
+                    b.HasIndex("UserId", "SeatId", "ShowtimeId")
+                        .IsUnique();
+
                     b.ToTable("Tickets");
+                });
+
+            modelBuilder.Entity("DataAccess.TicketPackage", b =>
+                {
+                    b.Property<int>("TicketId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PackageId")
+                        .HasColumnType("int");
+
+                    b.HasKey("TicketId", "PackageId");
+
+                    b.HasIndex("PackageId");
+
+                    b.ToTable("TicketPackages");
                 });
 
             modelBuilder.Entity("DataAccess.Transaction", b =>
@@ -244,6 +285,25 @@ namespace DataAccess.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("DataAccess.PackageFoodItem", b =>
+                {
+                    b.HasOne("DataAccess.FoodAndBeverage", "FoodAndBeverage")
+                        .WithMany("PackageFoodItems")
+                        .HasForeignKey("FoodAndBeverageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataAccess.Package", "Package")
+                        .WithMany("PackageFoodItems")
+                        .HasForeignKey("PackageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FoodAndBeverage");
+
+                    b.Navigation("Package");
+                });
+
             modelBuilder.Entity("DataAccess.Seat", b =>
                 {
                     b.HasOne("DataAccess.CinemaHall", "CinemaHall")
@@ -276,11 +336,6 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Ticket", b =>
                 {
-                    b.HasOne("DataAccess.Package", "Package")
-                        .WithMany("Tickets")
-                        .HasForeignKey("PackageId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("DataAccess.Seat", "Seat")
                         .WithMany("Tickets")
                         .HasForeignKey("SeatId")
@@ -299,13 +354,30 @@ namespace DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Package");
-
                     b.Navigation("Seat");
 
                     b.Navigation("Showtime");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DataAccess.TicketPackage", b =>
+                {
+                    b.HasOne("DataAccess.Package", "Package")
+                        .WithMany("TicketPackages")
+                        .HasForeignKey("PackageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataAccess.Ticket", "Ticket")
+                        .WithMany("TicketPackages")
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Package");
+
+                    b.Navigation("Ticket");
                 });
 
             modelBuilder.Entity("DataAccess.Transaction", b =>
@@ -326,6 +398,11 @@ namespace DataAccess.Migrations
                     b.Navigation("Showtimes");
                 });
 
+            modelBuilder.Entity("DataAccess.FoodAndBeverage", b =>
+                {
+                    b.Navigation("PackageFoodItems");
+                });
+
             modelBuilder.Entity("DataAccess.Movie", b =>
                 {
                     b.Navigation("Showtimes");
@@ -333,7 +410,9 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Package", b =>
                 {
-                    b.Navigation("Tickets");
+                    b.Navigation("PackageFoodItems");
+
+                    b.Navigation("TicketPackages");
                 });
 
             modelBuilder.Entity("DataAccess.Seat", b =>
@@ -344,6 +423,11 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("DataAccess.Showtime", b =>
                 {
                     b.Navigation("Tickets");
+                });
+
+            modelBuilder.Entity("DataAccess.Ticket", b =>
+                {
+                    b.Navigation("TicketPackages");
                 });
 
             modelBuilder.Entity("DataAccess.User", b =>

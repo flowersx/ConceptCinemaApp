@@ -10,9 +10,11 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
     public DbSet<Movie> Movies { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Ticket> Tickets { get; set; }
-    public DbSet<Package> Packages { get; set; }
+    public DbSet<Package> Packages { get; set; }    
     public DbSet<FoodAndBeverage> FoodAndBeverages { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
+    public DbSet<PackageFoodItem> PackageFoodItems { get; set; }
+    public DbSet<TicketPackage> TicketPackages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -45,28 +47,53 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
         .HasOne(t => t.Seat)
         .WithMany(s => s.Tickets)
         .HasForeignKey(t => t.SeatId)
-        .OnDelete(DeleteBehavior.Restrict); 
-
-    modelBuilder.Entity<Ticket>()
+        .OnDelete(DeleteBehavior.Restrict);    modelBuilder.Entity<Ticket>()
         .HasOne(t => t.User)
         .WithMany(u => u.Tickets)
         .HasForeignKey(t => t.UserId)
-        .OnDelete(DeleteBehavior.Cascade);
-
-    modelBuilder.Entity<Ticket>()
-        .HasOne(t => t.Package)
-        .WithMany(p => p.Tickets)
-        .HasForeignKey(t => t.PackageId)
-        .OnDelete(DeleteBehavior.SetNull);
-
-    modelBuilder.Entity<Transaction>()
+        .OnDelete(DeleteBehavior.Cascade);    modelBuilder.Entity<Transaction>()
         .HasOne(tr => tr.User)
         .WithMany(u => u.Transactions)
         .HasForeignKey(tr => tr.UserId)
         .OnDelete(DeleteBehavior.Cascade);
 
+    // Use Id as the primary key for tickets instead of the composite key
     modelBuilder.Entity<Ticket>()
-        .HasKey(t => new { t.UserId, t.SeatId, t.ShowtimeId }); 
+        .HasKey(t => t.Id);
+        
+    // Create a unique index on the composite key to maintain the uniqueness constraint
+    modelBuilder.Entity<Ticket>()
+        .HasIndex(t => new { t.UserId, t.SeatId, t.ShowtimeId })
+        .IsUnique();
+        
+    modelBuilder.Entity<PackageFoodItem>()
+        .HasKey(pf => new { pf.PackageId, pf.FoodAndBeverageId });
+        
+    modelBuilder.Entity<PackageFoodItem>()
+        .HasOne(pf => pf.Package)
+        .WithMany(p => p.PackageFoodItems)
+        .HasForeignKey(pf => pf.PackageId)
+        .OnDelete(DeleteBehavior.Cascade);
+          modelBuilder.Entity<PackageFoodItem>()
+        .HasOne(pf => pf.FoodAndBeverage)
+        .WithMany(f => f.PackageFoodItems)
+        .HasForeignKey(pf => pf.FoodAndBeverageId)
+        .OnDelete(DeleteBehavior.Cascade);
+        
+    modelBuilder.Entity<TicketPackage>()
+        .HasKey(tp => new { tp.TicketId, tp.PackageId });
+        
+    modelBuilder.Entity<TicketPackage>()
+        .HasOne(tp => tp.Ticket)
+        .WithMany(t => t.TicketPackages)
+        .HasForeignKey(tp => tp.TicketId)
+        .OnDelete(DeleteBehavior.Cascade);
+        
+    modelBuilder.Entity<TicketPackage>()
+        .HasOne(tp => tp.Package)
+        .WithMany(p => p.TicketPackages)
+        .HasForeignKey(tp => tp.PackageId)
+        .OnDelete(DeleteBehavior.Cascade);
 
     base.OnModelCreating(modelBuilder);
     }
@@ -132,12 +159,11 @@ public class Ticket
     public int UserId { get; set; }
     public int SeatId { get; set; }
     public int ShowtimeId { get; set; }
-    public int? PackageId { get; set; }
 
     public User User { get; set; }
     public Seat Seat { get; set; }
     public Showtime Showtime { get; set; }
-    public Package Package { get; set; }
+    public ICollection<TicketPackage> TicketPackages { get; set; }
 }
 
 public class Package
@@ -145,7 +171,8 @@ public class Package
     public int Id { get; set; }
     public string Name { get; set; }
     public decimal Price { get; set; }
-    public ICollection<Ticket> Tickets { get; set; }
+    public ICollection<TicketPackage> TicketPackages { get; set; }
+    public ICollection<PackageFoodItem> PackageFoodItems { get; set; }
 }
 
 public class FoodAndBeverage
@@ -153,6 +180,27 @@ public class FoodAndBeverage
     public int Id { get; set; }
     public string Name { get; set; }
     public decimal Price { get; set; }
+    public string ImageBase64 { get; set; }
+    public ICollection<PackageFoodItem> PackageFoodItems { get; set; }
+}
+
+public class PackageFoodItem
+{
+    public int PackageId { get; set; }
+    public int FoodAndBeverageId { get; set; }
+    public int Quantity { get; set; }
+    
+    public Package Package { get; set; }
+    public FoodAndBeverage FoodAndBeverage { get; set; }
+}
+
+public class TicketPackage
+{
+    public int TicketId { get; set; }
+    public int PackageId { get; set; }
+    
+    public Ticket Ticket { get; set; }
+    public Package Package { get; set; }
 }
 
 public class Transaction

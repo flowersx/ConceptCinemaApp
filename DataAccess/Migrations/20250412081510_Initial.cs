@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class ImageMovie : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,7 +32,8 @@ namespace DataAccess.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ImageBase64 = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -48,7 +49,8 @@ namespace DataAccess.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ImageBase64 = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ImageBase64 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShowInMainPage = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -133,6 +135,31 @@ namespace DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PackageFoodItems",
+                columns: table => new
+                {
+                    PackageId = table.Column<int>(type: "int", nullable: false),
+                    FoodAndBeverageId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PackageFoodItems", x => new { x.PackageId, x.FoodAndBeverageId });
+                    table.ForeignKey(
+                        name: "FK_PackageFoodItems_FoodAndBeverages_FoodAndBeverageId",
+                        column: x => x.FoodAndBeverageId,
+                        principalTable: "FoodAndBeverages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PackageFoodItems_Packages_PackageId",
+                        column: x => x.PackageId,
+                        principalTable: "Packages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Transactions",
                 columns: table => new
                 {
@@ -158,21 +185,15 @@ namespace DataAccess.Migrations
                 name: "Tickets",
                 columns: table => new
                 {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     SeatId = table.Column<int>(type: "int", nullable: false),
-                    ShowtimeId = table.Column<int>(type: "int", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    PackageId = table.Column<int>(type: "int", nullable: true)
+                    ShowtimeId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tickets", x => new { x.UserId, x.SeatId, x.ShowtimeId });
-                    table.ForeignKey(
-                        name: "FK_Tickets_Packages_PackageId",
-                        column: x => x.PackageId,
-                        principalTable: "Packages",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                    table.PrimaryKey("PK_Tickets", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Tickets_Seats_SeatId",
                         column: x => x.SeatId,
@@ -193,6 +214,35 @@ namespace DataAccess.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "TicketPackages",
+                columns: table => new
+                {
+                    TicketId = table.Column<int>(type: "int", nullable: false),
+                    PackageId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TicketPackages", x => new { x.TicketId, x.PackageId });
+                    table.ForeignKey(
+                        name: "FK_TicketPackages_Packages_PackageId",
+                        column: x => x.PackageId,
+                        principalTable: "Packages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TicketPackages_Tickets_TicketId",
+                        column: x => x.TicketId,
+                        principalTable: "Tickets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PackageFoodItems_FoodAndBeverageId",
+                table: "PackageFoodItems",
+                column: "FoodAndBeverageId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Seats_CinemaHallId",
                 table: "Seats",
@@ -209,8 +259,8 @@ namespace DataAccess.Migrations
                 column: "MovieId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tickets_PackageId",
-                table: "Tickets",
+                name: "IX_TicketPackages_PackageId",
+                table: "TicketPackages",
                 column: "PackageId");
 
             migrationBuilder.CreateIndex(
@@ -224,6 +274,12 @@ namespace DataAccess.Migrations
                 column: "ShowtimeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Tickets_UserId_SeatId_ShowtimeId",
+                table: "Tickets",
+                columns: new[] { "UserId", "SeatId", "ShowtimeId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Transactions_UserId",
                 table: "Transactions",
                 column: "UserId");
@@ -233,16 +289,22 @@ namespace DataAccess.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "FoodAndBeverages");
+                name: "PackageFoodItems");
 
             migrationBuilder.DropTable(
-                name: "Tickets");
+                name: "TicketPackages");
 
             migrationBuilder.DropTable(
                 name: "Transactions");
 
             migrationBuilder.DropTable(
+                name: "FoodAndBeverages");
+
+            migrationBuilder.DropTable(
                 name: "Packages");
+
+            migrationBuilder.DropTable(
+                name: "Tickets");
 
             migrationBuilder.DropTable(
                 name: "Seats");

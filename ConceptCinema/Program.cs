@@ -34,11 +34,13 @@ builder.Services.AddDbContext<UsersDbContext>(
 builder.Services.AddScoped<ICinemaHallRepository, CinemaHallRepository>();
 builder.Services.AddScoped<ISeatsRepository, SeatsRepository>();
 builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+builder.Services.AddScoped<IFoodRepository, FoodRepository>();
 
 //Services
 builder.Services.AddScoped<ICinemaHallService, CinemaHallService>();
 builder.Services.AddScoped<ISeatsService, SeatsService>();
 builder.Services.AddScoped<IMovieService, MovieService>();
+builder.Services.AddScoped<IFoodService, FoodService>();
 
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
